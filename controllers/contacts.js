@@ -45,16 +45,12 @@ const dellete = async (req, res, next) => {
 
 
 const updateById = async (req, res, next) => {
-    if (!Object.keys(req.body).length) {
-      return res.status(400).json({ message: "missing fields" });
-    }
+    
     const { contactId } = req.params;
     const result = await Contact.findByIdAndUpdate(contactId, req.body,{new: true});
-
     if (!result) {
       throw HttpError(400, "Not found");
     }
-    console.log(result);
     res.status(200).json(result);
 };
 
