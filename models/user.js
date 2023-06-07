@@ -5,10 +5,11 @@ const { handleMongooseError } = require("../helpers");
 const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const userSchema = new Schema(
-  { name: {
-    type: String,
-    required: [true, "Name is required"],
-  },
+  {
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+    },
     password: {
       type: String,
       required: [true, "Password is required"],
@@ -27,6 +28,10 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    }
   },
   { versionKey: false }
 );
