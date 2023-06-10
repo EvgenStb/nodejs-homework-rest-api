@@ -7,21 +7,21 @@ const { HttpError, ctrlWrapper } = require("../helpers");
 
 const register = async (req, res) => {
     const {email, password} = req.body;
-    const user  = await User.findOne({email});
+    const isPresen  = await User.findOne({email});
 
-    if (user) {
-        throw HttpError(409, "Email already in use")
+    if (isPresen) {
+        throw HttpError(409, "Email in use");
     }
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({...req.body, password: hashPassword});
-    res.status(201).json({email: newUser.email, name: newUser.name,})
+    const user = await User.create({...req.body, password: hashPassword});
+
+    res.status(201).json({user: {email: user.email, subscription: user.subscription}})
 }
 
 const login = async (req, res) => {
     const {email, password} = req.body;
-    console.log(req.body);
-    console.log(SECRET_KEY);
+
     const user = await User.findOne({email});
     
     if(!user) {
@@ -29,7 +29,7 @@ const login = async (req, res) => {
     }
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
-        throw HttpError(401, "Email or password invalid");
+        throw HttpError(401, "Email or password is wrong");
     }
 
     const payload = {
@@ -37,23 +37,31 @@ const login = async (req, res) => {
     }
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn:"23h"});
     await User.findByIdAndUpdate(user._id, {token})
-    res.json({token})
+    res.json({token , user: {email: user.email, subscription: user.subscription}})
 }
 
-const getCurrent = async (req, res, next) => {
+const getCurrent = async (req, res) => {
     const {email, name} = req.user;
     res.json({email, name,})
 }
+
+const updateSubscription = async (req, res, next) => {
+  const { _id } = req.user;
+  console.log(req.body);
+  const result = await User.findByIdAndUpdate(_id, req.body, { new: true });
+  res.status(200).json(result);
+};
 
 const logout = async (req, res, next) => {
     const {_id} = req.user;
     await User.findByIdAndUpdate(_id, {token: ""})
 
-    res.json({message: "logout succes"})
+    res.status(204).json({message: "logout succes"})
 }
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
-  logout:ctrlWrapper(logout)
+  updateSubscription: ctrlWrapper(updateSubscription),
+  logout: ctrlWrapper(logout),
 };
