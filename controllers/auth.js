@@ -49,7 +49,7 @@ const updateSubscription = async (req, res, next) => {
   const { _id } = req.user;
   console.log(req.body);
   const result = await User.findByIdAndUpdate(_id, req.body, { new: true });
-  res.status(200).json(result);
+  res.status(200).json({email: result.email, subscription: result.subscription});
 };
 
 const logout = async (req, res, next) => {
