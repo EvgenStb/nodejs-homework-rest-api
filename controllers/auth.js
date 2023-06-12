@@ -41,8 +41,8 @@ const login = async (req, res) => {
 }
 
 const getCurrent = async (req, res) => {
-    const {email, name} = req.user;
-    res.json({email, name,})
+    const { email, subscription } = req.user;
+    res.json({ email, subscription, });
 }
 
 const updateSubscription = async (req, res, next) => {
