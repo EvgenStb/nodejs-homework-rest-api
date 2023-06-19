@@ -16,7 +16,7 @@ router.get("/current", authenticate, ctrl.getCurrent);
 
 router.patch("/", authenticate, validateBody(schemas.updateSubscription), ctrl.updateSubscription)
 
-router.patch("/avatars", authenticate, upload.single("avatar"), ctrl.updateAvatar);
+router.patch("/avatars", authenticate, upload.single("avatar"),ctrl.updateAvatar);
 
 router.post("/logout", authenticate, ctrl.logout);
 

@@ -67,8 +67,9 @@ const updateSubscription = async (req, res, next) => {
 
 const updateAvatar = async (req, res) => {
     const {_id} = req.user
+  
     const { path: tempUpload, originalname } = req.file;
-    
+    console.log("🚀 ~ file: auth.js:72 ~ updateAvatar ~ req.file:", req.file)
     
     const filename = `${_id}_${originalname}`
     const resultUpload = path.join(avatarsDir, filename);
